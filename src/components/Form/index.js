@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { styles } from "./style";
+import { Result } from "./Result";
 
 export const Form = () => {
   const [initialValue, setInitialValue] = useState(null);
@@ -24,7 +25,20 @@ export const Form = () => {
 
   const toggleSwitch = () => setIsCompound((previousState) => !previousState);
 
-  const calculateFinalValue = () => {};
+  const calculateFinalValue = () => {
+    const interestValuePercent = interestValue / 100;
+    if (isCompound == false) {
+      const simpleFinalValue =
+        parseFloat(initialValue) + interestValuePercent * time * initialValue;
+      setFinalValue(simpleFinalValue.toFixed(2));
+      return;
+    } else {
+      const compoundFinalValue =
+        initialValue * (1 + interestValuePercent) ** time;
+      setFinalValue(compoundFinalValue.toFixed(2));
+      return;
+    }
+  };
 
   const inputVerification = () => {
     if (initialValue == null && interestValue == null && time == null) {
@@ -47,7 +61,7 @@ export const Form = () => {
     }
     setFinalValue(null);
     setButtonText("Calcular");
-    setMessage("Preencha o peso e altura");
+    setMessage("Preencha os campos corretamente");
   };
 
   return (
@@ -76,7 +90,7 @@ export const Form = () => {
             placeholder="Ex: 5000"
             keyboardType="numbers-and-punctuation"
           />
-          <Text style={styles.formLabel}>Juros</Text>
+          <Text style={styles.formLabel}>Juros ao mês</Text>
           <TextInput
             style={styles.input}
             onChangeText={setInterestValue}
@@ -84,7 +98,7 @@ export const Form = () => {
             placeholder="Ex: 2"
             keyboardType="numbers-and-punctuation"
           />
-          <Text style={styles.formLabel}>Tempo</Text>
+          <Text style={styles.formLabel}>Tempo (em meses)</Text>
           <TextInput
             style={styles.input}
             onChangeText={setTime}
@@ -101,6 +115,7 @@ export const Form = () => {
         </Pressable>
       ) : (
         <View style={styles.exhibitResult}>
+          <Result message={message} finalValue={finalValue} />
           <TouchableOpacity
             onPress={() => calculusValidation()}
             style={styles.buttonCalculator}
