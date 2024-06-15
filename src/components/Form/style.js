@@ -59,4 +59,14 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: "50%",
   },
+  gifStyle: {
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+  },
+  gifContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 25,
+  },
 });

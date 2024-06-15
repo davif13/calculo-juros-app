@@ -7,6 +7,7 @@ import {
   Pressable,
   Keyboard,
   Switch,
+  Image,
 } from "react-native";
 import { useState } from "react";
 import { styles } from "./style";
@@ -14,6 +15,7 @@ import { Result } from "./Result";
 
 export const Form = () => {
   const [initialValue, setInitialValue] = useState(null);
+  const [monthlyValue, setMonthlyValue] = useState(null);
   const [interestValue, setInterestValue] = useState(null);
   const [time, setTime] = useState(null);
   const [finalValue, setFinalValue] = useState(null);
@@ -27,22 +29,40 @@ export const Form = () => {
 
   const calculateFinalValue = () => {
     const interestValuePercent = interestValue / 100;
-    if (isCompound == false) {
-      const simpleFinalValue =
-        parseFloat(initialValue) + interestValuePercent * time * initialValue;
-      setFinalValue(simpleFinalValue.toFixed(2));
-      return;
+    if (monthlyValue == null) {
+      if (isCompound == false) {
+        const simpleFinalValue =
+          parseFloat(initialValue) + interestValuePercent * time * initialValue;
+        setFinalValue(simpleFinalValue.toFixed(2));
+        return;
+      } else {
+        const compoundFinalValue =
+          initialValue * (1 + interestValuePercent) ** time;
+        setFinalValue(compoundFinalValue.toFixed(2));
+        return;
+      }
     } else {
-      const compoundFinalValue =
-        initialValue * (1 + interestValuePercent) ** time;
-      setFinalValue(compoundFinalValue.toFixed(2));
-      return;
+      if (isCompound == false) {
+        const simpleFinalValue =
+          parseFloat(initialValue) * (1 + interestValuePercent * time) +
+          monthlyValue *
+            ((1 + interestValuePercent * time - 1) / interestValuePercent);
+        setFinalValue(simpleFinalValue.toFixed(2));
+        return;
+      } else {
+        const compoundFinalValue =
+          parseFloat(initialValue) * (1 + interestValuePercent) ** time +
+          (monthlyValue * ((1 + interestValuePercent) ** time - 1)) /
+            interestValuePercent;
+        setFinalValue(compoundFinalValue.toFixed(2));
+        return;
+      }
     }
   };
 
   const inputVerification = () => {
     if (initialValue == null && interestValue == null && time == null) {
-      setErrorMessage("Preencha todos os campos");
+      setErrorMessage("Preencha ao menos valor inicial, juros e tempo");
       Vibration.vibrate();
     }
   };
@@ -54,6 +74,7 @@ export const Form = () => {
       setInitialValue(null);
       setInterestValue(null);
       setTime(null);
+      setMonthlyValue(null);
       setMessage("Seu valor futuro é igual a : ");
       setButtonText("Calcular novamente");
       setErrorMessage(null);
@@ -90,6 +111,14 @@ export const Form = () => {
             placeholder="Ex: 5000"
             keyboardType="numbers-and-punctuation"
           />
+          <Text style={styles.formLabel}>Aporte Mensal R$</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setMonthlyValue}
+            value={monthlyValue}
+            placeholder="Ex: 500"
+            keyboardType="numbers-and-punctuation"
+          />
           <Text style={styles.formLabel}>Juros ao mês</Text>
           <TextInput
             style={styles.input}
@@ -112,6 +141,12 @@ export const Form = () => {
           >
             <Text style={styles.textButtonCalculator}>{buttonText}</Text>
           </TouchableOpacity>
+          <View style={styles.gifContainer}>
+            <Image
+              style={styles.gifStyle}
+              source={require("../../../assets/money.gif")}
+            />
+          </View>
         </Pressable>
       ) : (
         <View style={styles.exhibitResult}>
@@ -122,6 +157,12 @@ export const Form = () => {
           >
             <Text style={styles.textButtonCalculator}>{buttonText}</Text>
           </TouchableOpacity>
+          <View style={styles.gifContainer}>
+            <Image
+              style={styles.gifStyle}
+              source={require("../../../assets/money.gif")}
+            />
+          </View>
         </View>
       )}
     </View>
