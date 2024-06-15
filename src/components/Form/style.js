@@ -7,10 +7,19 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     alignItems: "center",
-    paddingTop: 30,
+    paddingTop: 25,
   },
   form: {
     width: "100%",
+  },
+  switchLabel: {
+    color: "#fffff1",
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  typeSwitchContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   formLabel: {
     color: "#fffff1",

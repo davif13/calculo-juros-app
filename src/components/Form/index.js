@@ -6,6 +6,7 @@ import {
   Vibration,
   Pressable,
   Keyboard,
+  Switch,
 } from "react-native";
 import { useState } from "react";
 import { styles } from "./style";
@@ -18,6 +19,10 @@ export const Form = () => {
   const [message, setMessage] = useState("Preencha todos os campos");
   const [buttonText, setButtonText] = useState("Calcular");
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const [isCompound, setIsCompound] = useState(false);
+
+  const toggleSwitch = () => setIsCompound((previousState) => !previousState);
 
   const calculateFinalValue = () => {};
 
@@ -49,6 +54,19 @@ export const Form = () => {
     <View style={styles.formContext}>
       {finalValue == null ? (
         <Pressable onPress={Keyboard.dismiss} style={styles.form}>
+          <View style={styles.typeSwitchContainer}>
+            <Text style={styles.switchLabel}>Escolha o tipo de juros:</Text>
+            <Text style={styles.formLabel}>
+              {isCompound ? "Composto" : "Simples"}
+            </Text>
+            <Switch
+              trackColor={{ false: "#005000", true: "#81b0ff" }}
+              thumbColor={isCompound ? "#f4f3f4" : "#f4f3f4"}
+              ios_backgroundColor="#005000"
+              onValueChange={toggleSwitch}
+              value={isCompound}
+            />
+          </View>
           <Text style={styles.formLabel}>Valor Inicial R$</Text>
           <Text style={styles.errorMessage}>{errorMessage}</Text>
           <TextInput
